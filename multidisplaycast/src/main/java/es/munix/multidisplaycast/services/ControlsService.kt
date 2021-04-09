@@ -33,7 +33,7 @@ class ControlsService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.hasExtra("image") == true) {
             val array = intent.getByteArrayExtra("image")
-            image = BitmapFactory.decodeByteArray(array, 0, array.size)
+            image = BitmapFactory.decodeByteArray(array, 0, array?.size?:0)
         }
         intent?.getStringExtra("title")?.let { title = it }
         intent?.getStringExtra("subtitle")?.let { subtitle = it }
