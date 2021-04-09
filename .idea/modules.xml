@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Multi-Display-Cast.iml" filepath="$PROJECT_DIR$/Multi-Display-Cast.iml" />
-      <module fileurl="file://$PROJECT_DIR$/multidisplaycast/multidisplaycast.iml" filepath="$PROJECT_DIR$/multidisplaycast/multidisplaycast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.iml" filepath="$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.iml" />
     </modules>
   </component>
 </project>

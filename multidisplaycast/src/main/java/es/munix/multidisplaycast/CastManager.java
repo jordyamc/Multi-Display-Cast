@@ -133,7 +133,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
             DiscoveryManager.getInstance().registerDefaultDeviceTypes();
             if (filters.length > 0)
                 discoveryManager.setCapabilityFilters(filters);
-            discoveryManager.setPairingLevel(DiscoveryManager.PairingLevel.ON);
+            discoveryManager.setPairingLevel(DiscoveryManager.PairingLevel.OFF);
             discoveryManager.addListener(this);
             discoveryManager.start();
         } else {
@@ -267,12 +267,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
 
     public Dialog getDisconnectDialog(@NonNull Context context,@NonNull View customView, @Nullable String positiveText, @NonNull final DialogCallback dialogCallback){
         AlertDialog.Builder builder = new AlertDialog.Builder(context).setView(customView)
-                .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogCallback.onPositive();
-                    }
-                });
+                .setPositiveButton(positiveText, (dialogInterface, i) -> dialogCallback.onPositive());
         return builder.create();
     }
 
@@ -297,14 +292,11 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
                 }
             } else if (getActivity() != null) {
                 final DevicePicker devicePicker = new DevicePicker(getActivity());
-                connectToCastDialog = devicePicker.getPickerDialog("Selecciona dispositivo", new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        connectToCastDialog.cancel();
-                        connectableDevice = (ConnectableDevice) adapterView.getItemAtPosition(i);
-                        connectableDevice.addListener(CastManager.this);
-                        connectableDevice.connect();
-                    }
+                connectToCastDialog = devicePicker.getPickerDialog("Selecciona dispositivo", (adapterView, view, i, l) -> {
+                    connectToCastDialog.cancel();
+                    connectableDevice = (ConnectableDevice) adapterView.getItemAtPosition(i);
+                    connectableDevice.addListener(CastManager.this);
+                    connectableDevice.connect();
                 });
                 if (!getActivity().isFinishing() && !getActivity().isDestroyed())
                     connectToCastDialog.show();
