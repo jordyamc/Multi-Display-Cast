@@ -58,7 +58,7 @@ public class NotificationsHelper {
     @TargetApi(Build.VERSION_CODES.O)
     private void createChannel(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.createNotificationChannel(new NotificationChannel(CHANNEL, "Controles de CAST", NotificationManager.IMPORTANCE_MIN));
+        manager.createNotificationChannel(new NotificationChannel(CHANNEL, "Cast controls", NotificationManager.IMPORTANCE_MIN));
     }
 
     public void updateButton(Context context, Boolean isPaused) {

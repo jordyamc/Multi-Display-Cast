@@ -67,18 +67,18 @@ class ControlsService : Service() {
                     setLargeIcon(image)
                 setStyle(MediaStyle())
                 val castActivityIntent = Intent(this@ControlsService, CastManager.getInstance().controlsClass)
-                val castActivityPendingIntent = PendingIntent.getActivity(this@ControlsService, ID + 1, castActivityIntent, 0)
+                val castActivityPendingIntent = PendingIntent.getActivity(this@ControlsService, ID + 1, castActivityIntent, PendingIntent.FLAG_IMMUTABLE)
                 setContentIntent(castActivityPendingIntent)
                 val disconnectIntent = Intent(this@ControlsService, CastReceiver::class.java)
                 disconnectIntent.putExtra("action", "disconnect")
-                addAction(R.drawable.ic_mc_stop, "Detener", PendingIntent.getBroadcast(this@ControlsService, ID + 2, disconnectIntent, 0))
+                addAction(R.drawable.ic_mc_stop, "Stop", PendingIntent.getBroadcast(this@ControlsService, ID + 2, disconnectIntent, PendingIntent.FLAG_IMMUTABLE))
                 val pauseIntent = Intent(this@ControlsService, CastReceiver::class.java)
                 pauseIntent.putExtra("action", "pause")
-                val pausePendingIntent = PendingIntent.getBroadcast(this@ControlsService, ID + 3, pauseIntent, 0)
+                val pausePendingIntent = PendingIntent.getBroadcast(this@ControlsService, ID + 3, pauseIntent, PendingIntent.FLAG_IMMUTABLE)
                 if (!isPause)
-                    addAction(R.drawable.ic_mc_pause, "Pausar", pausePendingIntent)
+                    addAction(R.drawable.ic_mc_pause, "Pause", pausePendingIntent)
                 else
-                    addAction(R.drawable.ic_mc_play, "Reanudar", pausePendingIntent)
+                    addAction(R.drawable.ic_mc_play, "Play", pausePendingIntent)
             }
             return notification.build()
         }
