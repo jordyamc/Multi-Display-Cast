@@ -179,6 +179,11 @@ public class ConnectableDevice implements DeviceServiceListener {
      */
     public void addService( DeviceService service ) {
         try {
+            if (service == null) return;
+            if (service.getServiceName().equals("DIAL")) return;
+            if (service.getServiceName().equals("AirPlay")) return;
+
+            //Log.e("Cast", friendlyName + ", add service: "+ service.getServiceName());
             final List<String> added = getMismatchCapabilities( service.getCapabilities(), getCapabilities() );
 
             service.setListener( this );
@@ -194,7 +199,7 @@ public class ConnectableDevice implements DeviceServiceListener {
 
             services.put( service.getServiceName(), service );
         } catch ( Exception e ) {
-
+            e.printStackTrace();
         }
     }
 
@@ -892,6 +897,7 @@ public class ConnectableDevice implements DeviceServiceListener {
     @Override
     public void onConnectionFailure( DeviceService service, Error error ) {
         // disconnect device if all services are not connected
+        //Log.e("Cast", "On connection fail: " + service.getServiceName() + ", " + error.getMessage());
         onDisconnect( service, error );
     }
 

@@ -298,29 +298,21 @@ public class CastService extends DeviceService implements MediaPlayer, MediaCont
             return;
         }
 
-        ConnectionListener connectionListener = new ConnectionListener() {
+        ConnectionListener connectionListener = () -> {
+            try {
+                mMediaPlayer.seek(mApiClient, position, RemoteMediaPlayer.RESUME_STATE_UNCHANGED)
+                        .setResultCallback(result -> {
+                            Status status = result.getStatus();
 
-            @Override
-            public void onConnected() {
-                try {
-                    mMediaPlayer.seek(mApiClient, position, RemoteMediaPlayer.RESUME_STATE_UNCHANGED)
-                            .setResultCallback(new ResultCallback<MediaChannelResult>() {
-
-                                @Override
-                                public void onResult(MediaChannelResult result) {
-                                    Status status = result.getStatus();
-
-                                    if (status.isSuccess()) {
-                                        Util.postSuccess(listener, null);
-                                    } else {
-                                        Util.postError(listener, new ServiceCommandError(status.getStatusCode(), status
-                                                .getStatusMessage(), status));
-                                    }
-                                }
-                            });
-                } catch (Exception e) {
-                    Util.postError(listener, new ServiceCommandError(0, "Unable to seek", null));
-                }
+                            if (status.isSuccess()) {
+                                Util.postSuccess(listener, null);
+                            } else {
+                                Util.postError(listener, new ServiceCommandError(status.getStatusCode(), status
+                                        .getStatusMessage(), status));
+                            }
+                        });
+            } catch (Exception e) {
+                Util.postError(listener, new ServiceCommandError(0, "Unable to seek", null));
             }
         };
 

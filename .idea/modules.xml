@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Multi-Display-Cast.iml" filepath="$PROJECT_DIR$/Multi-Display-Cast.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.iml" filepath="$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.main.iml" filepath="$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/multidisplaycast/Multi-Display-Cast.multidisplaycast.unitTest.iml" />
     </modules>
   </component>
 </project>

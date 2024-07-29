@@ -1,5 +1,10 @@
 <resources>
 
-    <string name="app_name">Connect-SDK-Android-Core</string>
+    <string name="app_name" translatable="false">Connect-SDK-Android-Core</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="content_not_compatible">Content not compatible</string>
+    <string name="stop_sending_content">Stop sending content</string>
+    <string name="no_content_playing">No content playing</string>
+    <string name="connecting_to_tv">Connecting to TV</string>
 
 </resources>

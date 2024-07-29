@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connect_sdk_picker_select_device">Selecciona un dispositivo</string>
+    <string name="connect_sdk_pairing_simple_title_tv">Peticion de emparejamiento</string>
+    <string name="connect_sdk_pairing_simple_prompt_tv">Confime el emparejamiento en la TV</string>
+    <string name="connect_sdk_pairing_pin_prompt_tv">Ingrese el codigo de emparejamiento mostrado en la TV</string>
+    <string name="connect_sdk_connection_failed">Ingrese el codigo de emparejamiento mostrado en la TV</string>
+    <string name="disconnect">Desconectar</string>
+    <string name="content_not_compatible">Contenido no compatible</string>
+    <string name="stop_sending_content">Detener envío de contenido</string>
+    <string name="connecting_to_tv">Conectado a la TV</string>
+    <string name="no_content_playing">No hay contenido en reproducción</string>
+</resources>

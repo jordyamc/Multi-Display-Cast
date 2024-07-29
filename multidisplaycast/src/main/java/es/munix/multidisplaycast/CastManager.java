@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.connectsdk.core.MediaInfo;
+import com.connectsdk.core.Util;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.device.ConnectableDeviceListener;
 import com.connectsdk.device.DevicePicker;
@@ -44,7 +45,9 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
+
 import es.munix.multidisplaycast.helpers.NotificationsHelper;
 import es.munix.multidisplaycast.interfaces.CastListener;
 import es.munix.multidisplaycast.interfaces.DialogCallback;
@@ -75,6 +78,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
     private MediaControl mMediaControl;
     private Boolean isPaused = false;
     private Boolean statusStartPlayingFired = false;
+    boolean isEnabled = true;
 
     //Unset at destroy
     private WeakReference<Activity> activityWeakReference;
@@ -166,6 +170,12 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
         castMenuItem.setIcon(R.drawable.cast_mc_off);
         castMenuItem.setOnMenuItemClickListener(this);
         calculateMenuVisibility();
+    }
+
+    public void unregisterForActivity() {
+        log("unregisterForActivity");
+        activityWeakReference = null;
+        castMenuItem = null;
     }
 
     private Activity getActivity() {
@@ -282,17 +292,17 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
                 if (mMediaControl != null && mediaObject != null) {
                     if (!TextUtils.isEmpty(mediaObject.getTitle()) && !TextUtils.isEmpty(mediaObject
                             .getImage())) {
-                        showDisconnectAlert(mediaObject.getTitle(), "Dejar de enviar contenido", mediaObject
+                        showDisconnectAlert(mediaObject.getTitle(), getString(R.string.stop_sending_content), mediaObject
                                 .getImage());
                     } else {
-                        showDisconnectAlert("No se está reproduciendo contenido", "Desconectar", null);
+                        showDisconnectAlert(getString(R.string.no_content_playing), getString(R.string.disconnect), null);
                     }
                 } else {
-                    showDisconnectAlert("No se está reproduciendo contenido", "Desconectar", null);
+                    showDisconnectAlert(getString(R.string.no_content_playing), getString(R.string.disconnect), null);
                 }
             } else if (getActivity() != null) {
                 final DevicePicker devicePicker = new DevicePicker(getActivity());
-                connectToCastDialog = devicePicker.getPickerDialog("Selecciona dispositivo", (adapterView, view, i, l) -> {
+                connectToCastDialog = devicePicker.getPickerDialog(getString(R.string.connect_sdk_picker_select_device), (adapterView, view, i, l) -> {
                     connectToCastDialog.cancel();
                     connectableDevice = (ConnectableDevice) adapterView.getItemAtPosition(i);
                     connectableDevice.addListener(CastManager.this);
@@ -301,7 +311,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
                 if (!getActivity().isFinishing() && !getActivity().isDestroyed())
                     connectToCastDialog.show();
 
-                pairingAlertDialog = getPairingDialog(getActivity(), "Conectando con su TV", "Confirme la conexión con su TV", "Aceptar", "Cancelar", new DialogCallback() {
+                pairingAlertDialog = getPairingDialog(getActivity(), getString(R.string.connecting_to_tv), getString(R.string.connect_sdk_pairing_simple_prompt_tv), getString(android.R.string.ok), getString(android.R.string.cancel), new DialogCallback() {
                     @Override
                     public void onNegative() {
                         devicePicker.cancelPicker();
@@ -317,7 +327,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
                 final InputMethodManager imm = (InputMethodManager) getActivity().getApplicationContext()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                pairingCodeDialog = getPairingCodeDialog(getActivity(), v, "Ingrese el código que ve en la TV", getActivity().getString(android.R.string.ok), getActivity().getString(android.R.string.cancel), new DialogCallback() {
+                pairingCodeDialog = getPairingCodeDialog(getActivity(), v, getString(R.string.connect_sdk_pairing_pin_prompt_tv), getActivity().getString(android.R.string.ok), getString(android.R.string.cancel), new DialogCallback() {
                     @Override
                     public void onPositive() {
                         if (connectableDevice != null) {
@@ -340,17 +350,15 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
         return false;
     }
 
+    private String getString(@StringRes int res){
+        return getActivity().getString(res);
+    }
+
     public Dialog getPairingDialog(@NonNull Context context,@NonNull  String title,@NonNull  String message,String positiveText, String negativeText,@NonNull final DialogCallback dialogCallback){
         return new AlertDialog.Builder(context).setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(positiveText, null)
-                .setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialogCallback.onNegative();
-                    }
-                })
+                .setNegativeButton(negativeText, (dialog, which) -> dialogCallback.onNegative())
                 .create();
     }
 
@@ -358,19 +366,8 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
         return new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setView(view)
-                .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        callback.onPositive();
-                    }
-                })
-                .setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        callback.onNegative();
-                    }
-                })
+                .setPositiveButton(positiveText, (arg0, arg1) -> callback.onPositive())
+                .setNegativeButton(negativeText, (dialog, whichButton) -> callback.onNegative())
                 .create();
     }
 
@@ -446,7 +443,7 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
                                         .onPlayStatusChanged(PlayStatusListener.STATUS_NOT_SUPPORT_LISTENER);
                             }
                             stop();
-                            Toast.makeText(getActivity(), "Contenido no compatible", Toast.LENGTH_LONG)
+                            Toast.makeText(getActivity(), R.string.content_not_compatible, Toast.LENGTH_LONG)
                                     .show();
                         }
                     });
@@ -541,10 +538,43 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
         }
     }
 
+    public void play() {
+        if (isConnected() && mMediaControl != null && mediaObject != null) {
+            if (isPaused) {
+                mMediaControl.play(null);
+                isPaused = false;
+                getNotificationsHelper().updateButton(context, isPaused);
+                for (Map.Entry<String, PlayStatusListener> playStatusListener : playStatusListeners.entrySet()) {
+                    playStatusListener.getValue()
+                            .onPlayStatusChanged(PlayStatusListener.STATUS_RESUME_PAUSE);
+                }
+            }
+        } else {
+            getNotificationsHelper().cancelNotification(context);
+        }
+    }
+
+    public void pause() {
+        if (isConnected() && mMediaControl != null && mediaObject != null) {
+            if (!isPaused) {
+                mMediaControl.pause(null);
+                isPaused = true;
+                getNotificationsHelper().updateButton(context, isPaused);
+                for (Map.Entry<String, PlayStatusListener> playStatusListener : playStatusListeners.entrySet()) {
+                    playStatusListener.getValue()
+                            .onPlayStatusChanged(PlayStatusListener.STATUS_PAUSED);
+                }
+            }
+        } else {
+            getNotificationsHelper().cancelNotification(context);
+        }
+    }
+
     public void stop() {
         if (isConnected() && mMediaControl != null) {
             stopUpdating();
             mMediaControl.stop(null);
+            getNotificationsHelper().stop(context);
         } else {
             getNotificationsHelper().cancelNotification(context.getApplicationContext());
         }
@@ -555,9 +585,14 @@ public class CastManager implements DiscoveryManagerListener, MenuItem.OnMenuIte
         return connectableDevice != null && connectableDevice.isConnected();
     }
 
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+        calculateMenuVisibility();
+    }
+
     private void calculateMenuVisibility() {
         if (discoveryManager != null) {
-            setCastMenuVisible(discoveryManager.getAllDevices().size() > 0);
+            setCastMenuVisible(isEnabled && discoveryManager.getAllDevices().size() > 0);
             if (isConnected()) {
                 castMenuItem.setIcon(R.drawable.cast_mc_on);
             }

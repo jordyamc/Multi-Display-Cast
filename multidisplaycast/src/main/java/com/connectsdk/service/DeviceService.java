@@ -20,6 +20,7 @@
 
 package com.connectsdk.service;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.connectsdk.core.Util;
